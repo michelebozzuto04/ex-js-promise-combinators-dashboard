@@ -12,11 +12,11 @@ const getDashboardData = async (query) => {
 
     console.log(results)
 
-    const city = results[0][0].name;
-    const country = results[0][0].country;
-    const temperature = results[1][0].temperature;
-    const weather = results[1][0].weather_description;
-    const airport = results[2][0].name;
+    const city = results[0].length !== 0 ? results[0][0].name : null;
+    const country = results[0].length !== 0 ? results[0][0].country : null;
+    const temperature = results[1].length !== 0 ? results[1][0].temperature : null;
+    const weather = results[1].length !== 0 ? results[1][0].weather_description : null;
+    const airport = results[2].length !== 0 ? results[2][0].name : null;
 
     return {
         city,
@@ -27,7 +27,7 @@ const getDashboardData = async (query) => {
     }
 }
 
-getDashboardData('london')
+getDashboardData('vienna')
     .then(data => {
         console.log('Dasboard data:', data);
         if (data.city && data.country) {
