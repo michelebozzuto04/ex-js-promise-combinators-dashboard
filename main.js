@@ -4,35 +4,30 @@ const fetchJson = async (url) => {
 }
 
 const getDashboardData = async (query) => {
-    const promise1 = await fetchJson(`http://localhost:3333/destinations?search=${query}`)
-        .then(data => ({
-            city: data[0]?.name,
-            country: data[0]?.country
-        }));
+    const promise1 = fetchJson(`http://localhost:3333/destinations?search=${query}`);
+    const promise2 = fetchJson(`http://localhost:3333/weathers?search=${query}`);
+    const promise3 = fetchJson(`http://localhost:3333/airports?search=${query}`);
 
-    const promise2 = await fetchJson(`http://localhost:3333/weathers?search=${query}`)
-        .then(data => ({
-            temperature: data[0]?.temperature,
-            weather: data[0]?.weather_description
-        }));
+    const results = await Promise.all([promise1, promise2, promise3]);
 
-    const promise3 = await fetchJson(`http://localhost:3333/airports?search=${query}`)
-        .then(data => ({
-            airport: data[0]?.name
-        }));
+    console.log(results)
 
-    return Promise.all([promise1, promise2, promise3])
-        .then((values) => {
-            return {
-                ...values[0],
-                ...values[1],
-                ...values[2],
-            }
-        })
-        .catch(error => console.log(error.message))
+    const city = results[0][0].name;
+    const country = results[0][0].country;
+    const temperature = results[1][0].temperature;
+    const weather = results[1][0].weather_description;
+    const airport = results[2][0].name;
+
+    return {
+        city,
+        country,
+        temperature,
+        weather,
+        airport
+    }
 }
 
-getDashboardData('vienna')
+getDashboardData('london')
     .then(data => {
         console.log('Dasboard data:', data);
         if (data.city && data.country) {
